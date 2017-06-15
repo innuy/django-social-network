@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friends</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+{#    <link href="{{ STATIC_URL }}/css/styles.css" rel="stylesheet">#}
+</head>
+<body>
+<a href="/">Main page</a>
+<h1>Friends</h1>
+    {% for friend in friends %}
+        <ul>
+            <li>{{ friend.first_user }} && {{ friend.second_user }} </li>
+        </ul>
+
+
+    {% endfor %}
+</body>
+</html>

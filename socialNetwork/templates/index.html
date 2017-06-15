@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div>
+    <button id="logout"> Logout</button>
+
+</div>
+<div>
+    <h1>Welcome {{ user.logged_user }}</h1>
+    <a href="/friends/">See friends</a>
+    <a href="/addFriend/">Add friend</a>
+    <div>
+        <h2>Posts</h2>
+        {% for post in posts %}
+            <h4>{{ post.title }}</h4>
+            <p>posted by {{ post.author.username }}</p>
+            <p>{{ post.description }} </p>
+            <p>{{ post.date_posted }}</p>
+        {% endfor %}
+
+    </div>
+</div>
+
+</body>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+
+    var csrftoken = "{{ csrf_token }}";
+    $(document).ready(function () {
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    });
+
+
+    function logout() {
+        $.ajax({
+            method: 'post',
+            url: "/logout/",
+            success: function (data) {
+                window.location = "/login/";
+            }
+        }).fail(function () {
+            window.location = "/login/";
+        }).done(function (msg) {
+        });
+    }
+
+    $('#logout').on('click', function () {
+        logout();
+
+    });
+
+
+</script>
+</html>
