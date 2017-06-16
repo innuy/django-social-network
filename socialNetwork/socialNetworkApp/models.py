@@ -10,6 +10,7 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 from socialNetwork import settings
+import logging
 
 
 class UserFriend(models.Model):
@@ -18,7 +19,27 @@ class UserFriend(models.Model):
 
     @staticmethod
     def get_user_friends(user_id):
-        return UserFriend.objects.filter(Q(first_user=user_id) | Q(second_user=user_id))
+        """
+        Get user friends from a user id
+        :param user_id: User identifier (integer)
+
+        :return: list of user objects
+        """
+        friendships = UserFriend.objects.filter(Q(first_user=user_id) | Q(second_user=user_id))
+        user_friends = []
+        for friendship in friendships:
+            try:
+                # Select friend from UserFriend relationship
+                if friendship.first_user.id != user_id:
+                    user_friends.append(friendship.first_user)
+                else:
+                    user_friends.append(friendship.second_user)
+            except Exception as e:
+                # [TODO] see log
+                # TODO: check log traceback
+                logger.exception(e)
+
+        return user_friends
 
     class Meta:
         unique_together = ("first_user", "second_user")
@@ -26,30 +47,50 @@ class UserFriend(models.Model):
 
 class User(AbstractUser):
     time_spent_online = models.IntegerField(default=0)
-    friends = models.ManyToManyField(UserFriend, max_length=20)
+    friends = models.ManyToManyField(UserFriend)
 
     @staticmethod
     def top_ten_logged_users():
+        """
+        Get the 10 users that spent more time online
+        :return: list of user objects
+        """
         top_ten_users = []
-        users = User.objects.all().order_by("time_spent_online")
-        for user in users[:10]:
+        users = User.objects.order_by("time_spent_online")[:10]
+        for user in users:
             top_ten_users.append(user)
 
         return top_ten_users
 
-    # Update time online if the user is logged. If not it gets updated in the logout
-    def set_time_online(self):
-        user = User.objects.get(id=self.id)
+    def get_unknown_users(self):
+        """
+        Get users that are not in the user's friends list.
+        :return: list of user objects
+        """
+        users = UserFriend.get_user_friends(self.id)
+        friends_ids = [user.pk for user in users]
+        unknown_users = User.objects.exclude(pk__in=friends_ids + [self.id])
 
-        if user.is_logged:
-            time_logged = timezone.now() - user.last_login_date
-            user.time_spent_online += time_logged.seconds // 60
+        return unknown_users
+
+    def set_time_online(self):
+        """
+        Update the time that the user spent logged in.
+        Triggered by logout operation.
+        """
+        user = User.objects.get(id=self.id)
+        time_logged = timezone.now() - user.last_login
+        self.time_spent_online += time_logged.total_seconds() // 60
+        User.save(self)
 
     class Meta:
         db_table = 'auth_user'
 
 
 class Post(models.Model):
+    """
+    User messages
+    """
     title = models.CharField(max_length=10)
     description = models.CharField(max_length=50)
     date_posted = models.DateTimeField(blank=True, default=timezone.now)
