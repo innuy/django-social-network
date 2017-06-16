@@ -99,7 +99,7 @@
                 rankingTable.clear().draw();
                 for (row in data.users) {
                     console.log(data.users[row].username)
-                    rankingTable.row.add([data.users[row].username, data.users[row].time_online + " hours", data.users[row].time_online]);
+                    rankingTable.row.add([data.users[row].username, data.users[row].time_online + " minutes", data.users[row].time_online]);
                     rankingTable.draw();
                 }
 
