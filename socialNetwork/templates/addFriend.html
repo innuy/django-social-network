@@ -3,21 +3,47 @@
 <head>
     <title>Friends</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="{{ STATIC_URL }}/css/styles.css" rel="stylesheet">
+    <link href="/socialNetworkApp/static/css/styles.css" rel="stylesheet">
 </head>
 <body>
-<a href="/">Main page</a>
-<h1>Add user to my friend list</h1>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
 
-        {% for user in users %}
-            <ul>
-                <li>
-                    {{ user.username }}
-                    <button id="{{ user.id }}" class="addFriend badge badge-default badge-pill">+</button>
-                </li>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
 
             </ul>
-        {% endfor %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" id="logout">Logout</a></li>
+
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="starter-template">
+
+    <h1>Add user to my friend list</h1>
+    <div class="container">
+        <div class="starter-template">
+            <ul class="list-group">
+                {% for user in users %}
+
+                    <li class="list-group-item justify-content-between">
+                        {{ user.username }}
+                        <button id="{{ user.id }}" class="addFriend badge badge-default badge-pill">+</button>
+                    </li>
+
+
+                {% endfor %}
+                {% if not users %}
+                    <i style="">not users to display</i>
+
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
 
 </body>
 
@@ -26,9 +52,7 @@
 <script>
 
 
-
-
-     var csrftoken = "{{ csrf_token }}";
+    var csrftoken = "{{ csrf_token }}";
     $(document).ready(function () {
         function csrfSafeMethod(method) {
             // these HTTP methods do not require CSRF protection
@@ -51,16 +75,16 @@
             url: "/friends/",
             data: data,
             success: function () {
-               window.location = "/";
+                window.location = "/";
             }
         }).fail(function () {
-           alert("ya sos amigo de ese gil");
+            alert("ya sos amigo de ese gil");
         }).done(function (msg) {
         });
     }
 
     $('.addFriend').on('click', function () {
-        var data_friend = {second_user : $(this).attr("id")};
+        var data_friend = {second_user: $(this).attr("id")};
         addFriend(data_friend);
 
     });

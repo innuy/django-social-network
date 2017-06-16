@@ -4,27 +4,58 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/socialNetworkApp/static/css/styles.css" rel="stylesheet">
 </head>
 <body>
-<div>
-    <button id="logout"> Logout</button>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
 
-</div>
-<div>
-    <h1>Welcome {{ user.logged_user }}</h1>
-    <a href="/friends/">See friends</a>
-    <a href="/addFriend/">Add friend</a>
-    <div>
-        <h2>Posts</h2>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="/friends/">See friend</a></li>
+                <li><a href="/users/">Add friends</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" id="logout">Logout</a></li>
+
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+
+
+<div class="container">
+    <div class="starter-template">
+        <h1>Welcome {{ user.logged_user }}</h1>
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <h3>Posts</h3>
+            </div><!-- /col-sm-12 -->
+        </div><!-- /row -->
+
         {% for post in posts %}
-            <h4>{{ post.title }}</h4>
-            <p>posted by {{ post.author.username }}</p>
-            <p>{{ post.description }} </p>
-            <p>{{ post.date_posted }}</p>
-        {% endfor %}
+            <div class="row">
+                <div class="col-lg-6 col-lg-offset-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <strong>{{ post.author.username }}</strong> <span
+                                class="text-muted">{{ post.date_posted }}</span>
+                        </div>
+                        <div class="panel-body">
+                            {{ post.description }}
+                        </div><!-- /panel-body -->
+                    </div><!-- /panel panel-default -->
+                </div><!-- /col-sm-5 -->
+            </div>
 
+        {% endfor %}
     </div>
 </div>
+
 
 </body>
 
