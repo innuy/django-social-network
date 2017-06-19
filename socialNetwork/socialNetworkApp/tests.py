@@ -39,14 +39,14 @@ class UserFriendTestCase(TestCase):
         UserFriend.objects.create(first_user=self.first_user, second_user=self.second_user)
         client = Client()
         response = client.get(reverse("friends"))
-        self.assertEqual(response.status_code, 403)
+        self.assertRedirects(response, reverse("login"), 302)
 
     def test_add_new_friend_unauthorized_user(self):
         client = Client()
         data = {"second_user": self.second_user}
 
         response = client.post(reverse("friends"), data, content_type='application/json')
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
 
     def test_add_new_friend(self):
         client = Client()
@@ -60,7 +60,7 @@ class UserFriendTestCase(TestCase):
     def test_add_unexistent_new_friend(self):
         """
         pre: doesen't exist a user with id 99999999
-        Tries to add a friend that doesen't exists
+        Tries to add a friend that doesn't exists
         """
         client = Client()
         client.login(username="paul", password="a")
@@ -69,6 +69,7 @@ class UserFriendTestCase(TestCase):
         response = client.post(reverse("friends"), data)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(0, UserFriend.objects.all().count())
+
 
 class UserTestCase(TestCase):
     def test_get_unknown_users(self):
@@ -132,13 +133,12 @@ class PostTestCase(TestCase):
         response = client.post(reverse("logout"), content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
-
     def test_get_posts_unauthorized_user(self):
         second_user = User.objects.create(username="jhon", email="a", password="b")
         client = Client()
         client.login(username="jhon", password="a")
         response = client.get(reverse("index"))
-        self.assertEqual(response.status_code, 403)
+        self.assertRedirects(response, reverse("login"), 302)
 
 
 class TimeOnlineTestCase(TestCase):
