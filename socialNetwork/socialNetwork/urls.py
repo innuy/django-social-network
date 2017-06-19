@@ -20,7 +20,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     url(r'^', include('socialNetworkApp.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^login/$', auth_views.login),
+
 
 
 ]

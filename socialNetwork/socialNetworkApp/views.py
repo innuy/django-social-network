@@ -10,7 +10,7 @@ from rest_framework import permissions
 
 from serializers import UserSerializer
 
-import json
+from constants import *
 
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
@@ -25,11 +25,21 @@ from models import User, UserFriend, Post
 # class ValidateUserLogged(APIView):
 #    def get(self, request):
 
-class RestrictedView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+
+class AuthRequiredMiddleware(object):
+    def process_request(self, request):
+        """
+        redirect to login page if there is no user logged in.
+        :return: renders login.html if not logged in or do nothing if logged in
+        """
+        if not request.user.is_authenticated():
+            if exempt_urls.__contains__(request.get_full_path()):
+                return None
+            return redirect(reverse('login'))
+        return None
 
 
-class UserView(RestrictedView):
+class UserView(APIView):
     def get(self, request):
         """
         Get all the users that are not on the user friends list
@@ -41,7 +51,7 @@ class UserView(RestrictedView):
         return render(request, 'addFriend.html', {'users': users_dictionary, 'logged_user': logged_user})
 
 
-class UserFriendsView(RestrictedView):
+class UserFriendsView(APIView):
     def get(self, request):
         """
         Get all the user friends
@@ -96,7 +106,7 @@ class RankingView(APIView):
         return JsonResponse({'users': user_ranking_dictionary}, safe=False)
 
 
-class IndexView(RestrictedView):
+class IndexView(APIView):
     def get(self, request):
         """
         Get all user messages and the logged in user
@@ -105,13 +115,16 @@ class IndexView(RestrictedView):
 
         logged_user = {'logged_user': request.user}
         posts_dictionary = list(
-        Post.objects.all().order_by("-date_posted").values('id', 'title', 'description', 'date_posted',
+            Post.objects.all().order_by("-date_posted").values('id', 'title', 'description', 'date_posted',
                                                                'author'))
 
         return render(request, 'index.html', {'posts': posts_dictionary, 'user': logged_user})
 
 
 class LoginView(APIView):
+    def get(self, request):
+        return render(request, 'login.html')
+
     def post(self, request):
         """
         User authentication
@@ -123,10 +136,10 @@ class LoginView(APIView):
             return redirect('index')
 
         else:
-            return render(request, 'registration/login.html', status=403)
+            return render(request, 'login.html', status=403)
 
 
-class LogoutView(RestrictedView):
+class LogoutView(APIView):
     def post(self, request):
         """
         User logout
