@@ -14,7 +14,7 @@ from socialNetworkApp.models import User, UserFriend, Post
 class UserFriendTestCase(TestCase):
     def setUp(self):
         self.first_user = User.objects.create(username="paul", email="a")
-        self.second_user = User.objects.create(username="jhon", password="a", email="a")
+        self.second_user = User.objects.create(username="john", password="a", email="a")
         self.first_user.set_password("a")
         self.first_user.save()
 
@@ -49,12 +49,11 @@ class UserFriendTestCase(TestCase):
         data = {"second_user": self.second_user.id}
         response = client.post(reverse("friends"), data)
         self.assertEqual(response.status_code, 200)
-        # TODO: Check if user added is the same as requested
         self.assertEqual(1, UserFriend.objects.all().count())
-        # Check that the paul's friend id is actually john's id
-        self.assertEqual(self.first_user.friends.first().second_user_id, self.second_user.id)
+        # Check that the paul's friend username is actually john's username
+        self.assertEqual(UserFriend.objects.first().second_user.username, self.second_user.username)
 
-    def test_add_unexistent_new_friend(self):
+    def test_add_nonexistent_new_friend(self):
         """
         pre: doesn't exist a user with id 99999999
         Tries to add a friend that doesn't exists
@@ -65,15 +64,15 @@ class UserFriendTestCase(TestCase):
         response = client.post(reverse("friends"), data)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(0, UserFriend.objects.all().count())
-        
+
     def test_add_friend_already_exists(self):
         client = Client()
         client.login(username="paul", password="a")
-        UserFriend.objects.create(first_user=self.first_user, second_user=self.second_user)
         data = {"second_user": self.first_user.id}
-        response = client.post(reverse("friends"), data)
+        client.post(reverse("friends"), data)
+        second_data = {"second_user": self.first_user.id}
+        response = client.post(reverse("friends"), second_data)
         self.assertEqual(response.status_code, 409)
-        # TODO: Create two times UserFriend with different friend order
 
 
 class UserTestCase(TestCase):
@@ -109,19 +108,17 @@ class RankingTestCase(TestCase):
         first_user.set_password("a")
         first_user.save()
 
-
     def test_get_top_user_logged_users(self):
         """
         Get the users that spent more time logged in.
-        The first user on the returned list will be tha last one on the ranking board. 
-        John is the one that spent less time online.
+        Bob is the one that spent more time online.
         """
         client = Client()
         response = client.get(reverse("ranking"))
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content)
         users = data['users']
-        self.assertEqual(users[0]['username'], "john")
+        self.assertEqual(users[0]['username'], "bob")
 
 
 class PostTestCase(TestCase):
@@ -163,11 +160,10 @@ class TimeOnlineTestCase(TestCase):
         self.first_user = User.objects.create(username="paul", email="a")
         self.first_user.set_password("a")
         self.first_user.save()
-    
+
     def test_time_online(self):
-        # [TODO] calculate time online
         """
-        Test that the time that the user spent online is setted correctly
+        Test that the time that the user spent online is set correctly
         """
         client = Client()
         client.login(username="paul", password="a")
@@ -175,8 +171,8 @@ class TimeOnlineTestCase(TestCase):
         self.first_user.save()
         response = client.post(reverse("logout"), content_type='application/json')
         self.assertEqual(response.status_code, 200)
-        # TODO: CHECK THIS 
-        self.assertEqual(self.first_user.time_spent_online, 10)
+        time_online = User.objects.get(id=self.first_user.id).time_spent_online
+        self.assertEqual(time_online, 10)
 
 
 class LoginTestCase(TestCase):
@@ -185,7 +181,7 @@ class LoginTestCase(TestCase):
         user.set_password("a")
         user.save()
 
-    def test_user_login_succes(self):
+    def test_user_login_success(self):
         data = {"username": "paul", "password": "a"}
         client = Client()
         response = client.post(reverse("login"), data)
