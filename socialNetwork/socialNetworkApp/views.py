@@ -25,6 +25,7 @@ class AuthRequiredMiddleware(object):
         if not request.user.is_authenticated():
             if exempt_urls.__contains__(request.get_full_path()):
                 return None
+            logger.warn("Unauthorized user trying to access forbidden page. Redirected to login")
             return redirect(reverse('login'))
         return None
 
@@ -33,7 +34,7 @@ class UserView(APIView):
     def get(self, request):
         """
         Get all the users that are not on the user friends list
-        :return: render
+        :return: render addFriend.html
         """
         users_dictionary = list(request.user.get_unknown_users().values('id', 'username'))
         return render(request, 'addFriend.html', {'users': users_dictionary})
@@ -43,7 +44,7 @@ class UserFriendsView(APIView):
     def get(self, request):
         """
         Get all the user friends
-        :return: renders userFriends.html or status code 403 if user is not logged in
+        :return: render userFriends.html
         """
         user = request.user
         users = UserFriend.get_user_friends(user.id)
@@ -54,7 +55,9 @@ class UserFriendsView(APIView):
     def post(self, request):
         """
         Add a new friend
-        :return: status code 200 or 400 if the friend's data to add is bad requested
+        :return: status code 200 on success,
+                 400 if the friend's data to add is bad requested or
+                 409 if the friendship already exists
         """
         response = HttpResponse(status=200)
         try:
@@ -63,10 +66,10 @@ class UserFriendsView(APIView):
             first_user = request.user
             UserFriend.objects.create(first_user=first_user, second_user=second_user)
         except User.DoesNotExist as e:
-            # logger.exception(e)
+            logger.exception(e)
             response = HttpResponse(status=400)
         except IntegrityError as e:
-            # logger.exception(e)
+            logger.exception(e)
             response = HttpResponse(status=409)
         return response
 

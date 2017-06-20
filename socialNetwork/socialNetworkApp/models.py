@@ -34,15 +34,15 @@ class UserFriend(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Always saves the user with lesser id on the first
-        user and the greater on the second user.
+        Always saves the user with smaller id on the first
+        user and the bigger on the second user.
         Doing this we avoid to add repeated friendships
         """
 
-        greater = self.first_user if self.first_user.id >= self.second_user.id else self.second_user
-        lesser = self.first_user if greater == self.second_user else self.second_user
-        self.first_user = lesser
-        self.second_user = greater
+        bigger = self.first_user if self.first_user.id >= self.second_user.id else self.second_user
+        smaller = self.first_user if bigger == self.second_user else self.second_user
+        self.first_user = smaller
+        self.second_user = bigger
         super(UserFriend, self).save(*args, **kwargs)
 
     class Meta:
@@ -51,7 +51,6 @@ class UserFriend(models.Model):
 
 class User(AbstractUser):
     time_spent_online = models.IntegerField(default=0)
-    friends = models.ManyToManyField(UserFriend, through='UserFriend')
 
     @staticmethod
     def top_ten_logged_users():
@@ -59,7 +58,7 @@ class User(AbstractUser):
         Get the 10 users that spent more time online
         :return: list of user objects
         """
-        users = User.objects.order_by("time_spent_online")[:10]
+        users = User.objects.order_by("-time_spent_online")[:10]
         return [user for user in users.iterator()]
 
     def get_unknown_users(self):
