@@ -96,7 +96,7 @@ class IndexView(APIView):
         :return: render index.html on success or login.html if user isn't authorized
         """
         posts_dictionary = list(Post.objects.all().order_by("-date_posted").values('id', 'title', 'description',
-                                                                                   'date_posted', 'author'))
+                                                                                   'date_posted', 'author__username'))
 
         return render(request, 'index.html', {'posts': posts_dictionary, 'logged_user': request.user})
 
