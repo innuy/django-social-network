@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friends</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/styles.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" id="logout">Logout</a></li>
+
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="starter-template">
+
+    <h1>Friends</h1>
+    <div class="container">
+
+            <ul class="list-group">
+                {% for user in users %}
+
+                    <li class="list-group-item justify-content-between">
+                        {{ user.username }}
+                    </li>
+
+
+                {% endfor %}
+            </ul>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+
+POSTGRES_DB=socialNetwork
+POSTGRES_USER=root
+DB_SERVICE=postgres
+DB_PORT=5432

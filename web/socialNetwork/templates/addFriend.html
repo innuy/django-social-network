@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Friends</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/styles.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" id="logout">Logout</a></li>
+
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="starter-template">
+
+    <h1>Add user to my friend list</h1>
+    <div class="container">
+        <div class="starter-template">
+            <ul class="list-group">
+                {% for user in users %}
+
+                    <li class="list-group-item justify-content-between">
+                        {{ user.username }}
+                        <button id="{{ user.id }}" class="addFriend badge badge-default badge-pill">+</button>
+                    </li>
+
+
+                {% endfor %}
+                {% if not users %}
+                    <i style="">not users to display</i>
+
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+
+
+    var csrftoken = "{{ csrf_token }}";
+    $(document).ready(function () {
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+    });
+
+
+    function addFriend(data) {
+        $.ajax({
+            method: 'post',
+            url: "/friends/",
+            data: data,
+            success: function () {
+                window.location = "/";
+            }
+        }).fail(function () {
+            alert("Friendship already exists");
+        }).done(function (msg) {
+        });
+    }
+
+    $('.addFriend').on('click', function () {
+        var data_friend = {second_user: $(this).attr("id")};
+        addFriend(data_friend);
+
+    });
+
+
+</script>
+
+</html>
