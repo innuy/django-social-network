@@ -1,35 +1,23 @@
+{% extends 'base.html' %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <title>Title</title>
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/static/css/styles.css" rel="stylesheet">
 </head>
 <body>
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="/">Home</a></li>
-                <li><a href="/friends/">See friends</a></li>
-                <li><a href="/users/">Add friends</a></li>
-
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" id="logout">Logout</a></li>
-
-            </ul>
-        </div><!--/.nav-collapse -->
-    </div>
-</nav>
+{% block content %}
 
 
 <div class="container">
     <div class="starter-template">
         <h1>Welcome {{ logged_user }}</h1>
 
+{#         <select id="username">#}
+{#             {% for post in posts %}#}
+{#                <option value= "{{ post.author__username}}">{{ post.author__username }}</option>#}
+{##}
+{#             {% endfor %}#}
+{#         </select>#}
         <div class="row">
             <div class="col-sm-12">
 
@@ -37,67 +25,47 @@
             </div><!-- /col-sm-12 -->
         </div><!-- /row -->
 
-        {% for post in posts %}
-            <div class="row">
-                <div class="col-lg-6 col-lg-offset-3">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <strong>{{ post.author__username }}: {{ post.title }}</strong> <span
-                                class="text-muted">{{ post.date_posted }}</span>
-                        </div>
-                        <div class="panel-body">
-                            {{ post.description }}
-                        </div><!-- /panel-body -->
-                    </div><!-- /panel panel-default -->
-                </div><!-- /col-sm-5 -->
-            </div>
 
-        {% endfor %}
+{#            <div id="post_example" hidden>#}
+{#                    <div class="row post_to_add">#}
+{#                        <div class="col-lg-6 col-lg-offset-3">#}
+{#                            <div class="panel panel-default">#}
+{#                                <div class="panel-heading">#}
+{#                                    <strong id="title">{{ post.author__username }}: {{ post.title }}</strong> <span#}
+{#                                        class="text-muted">{{ post.date_posted }}</span>#}
+{#                                </div>#}
+{#                                <div class="panel-body">#}
+{#                                    {{ post.description }}#}
+{#                                </div><!-- /panel-body -->#}
+{#                            </div><!-- /panel panel-default -->#}
+{#                        </div><!-- /col-sm-5 -->#}
+{#                    </div>#}
+{#                </div>#}
+
+
+            {% for post in posts %}
+                <div id="post_{{ post.id }}">
+                    <div class="row post_added">
+                        <div class="col-lg-6 col-lg-offset-3">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <strong>{{ post.author__username }}: {{ post.title }}</strong> <span
+                                        class="text-muted">{{ post.date_posted }}</span>
+                                </div>
+                                <div class="panel-body">
+                                    {{ post.description }}
+                                </div><!-- /panel-body -->
+                            </div><!-- /panel panel-default -->
+                        </div><!-- /col-sm-5 -->
+                    </div>
+                </div>
+            {% endfor %}
+
     </div>
 </div>
-
+{% endblock content %}
 
 </body>
 
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
 
-    var csrftoken = "{{ csrf_token }}";
-    $(document).ready(function () {
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-
-        $.ajaxSetup({
-            beforeSend: function (xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
-    });
-
-
-    function logout() {
-        $.ajax({
-            method: 'post',
-            url: "/logout/",
-            success: function (data) {
-                window.location = "/login/";
-            }
-        }).fail(function () {
-            window.location = "/login/";
-        }).done(function (msg) {
-        });
-    }
-
-    $('#logout').on('click', function () {
-        logout();
-
-    });
-
-
-</script>
 </html>

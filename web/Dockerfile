@@ -4,6 +4,8 @@ FROM alpine
 RUN apk update
 RUN apk upgrade
 RUN apk add --update python python-dev py-pip postgresql-client postgresql-dev build-base gettext
+RUN apk add build-base python-dev py-pip jpeg-dev zlib-dev
+ENV LIBRARY_PATH=/lib:/usr/lib
 
 # Initialize
 RUN mkdir -p /data/web

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 import logging
 
+import os
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.db.models import Q
@@ -49,8 +50,17 @@ class UserFriend(models.Model):
         unique_together = ("first_user", "second_user")
 
 
+    def __str__(self):
+        return self.second_user.username
+
 class User(AbstractUser):
     time_spent_online = models.IntegerField(default=0)
+    profile_image = models.ImageField(upload_to='users', blank=True, null=True)
+
+    def image_tag(self):
+        return u'<img src="%s" />' % '/static/users'
+    image_tag.short_description = 'Images'
+    image_tag.allow_tags = True
 
     @staticmethod
     def top_ten_logged_users():

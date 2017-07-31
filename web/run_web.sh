@@ -1,6 +1,7 @@
 #!/bin/sh
 
 sleep 20
+python manage.py makemigrations						# Make database migrations
 python manage.py migrate                  # Apply database migrations
 python manage.py collectstatic --noinput  # Collect static files
 python manage.py loaddata socialNetworkApp.json #Loads data

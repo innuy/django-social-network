@@ -1,0 +1,106 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{% static "css/styles.css" %}" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-default navbar-fixed-top">
+   <div class="container">
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="{% url "index" %}">Home</a></li>
+                <li><a href="/friends/">See friends</a></li>
+                <li><a href="/users/">Add friends</a></li>
+                <li><a href="/edit/">Edit info</a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#" id="logout">Logout</a></li>
+
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+{% block content %}{% endblock content %}
+</body>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script>
+
+    var csrftoken = "{{ csrf_token }}";
+{#    var currentPosts = {{ posts | safe }};#}
+    var currentPosts = [];
+    $(document).ready(function () {
+
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        {#        $("#username").on('change', getSelectedUser);#}
+
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+
+        {#    function reloadPosts(username) {#}
+        {##}
+        {#        $.ajax({#}
+        {#                method: 'post',#}
+        {#                url: "/",#}
+        {#                data: username,#}
+        {#                dataType: "json",#}
+        {#                success: function (data) {#}
+        {#                    $(".post_added").remove();#}
+        {#                    $("#post_to_add").show();#}
+        {#                    for(var i=0; i<data.length; i++){#}
+        {#                         $("#post_to_add").clone().after("#post_to_add");#}
+        {#                    }#}
+        {#                }#}
+        {#            }).fail(function () {#}
+        {#                window.location = "/login/";#}
+        {#            }).done(function (msg) {#}
+        {#            });#}
+        {#    }#}
+        {##}
+        {#        function getSelectedUser(event) {#}
+        {#            var username = {username: this.value};#}
+        {#            reloadPosts(username);#}
+        {#        };#}
+        {##}
+        {#{);#}
+
+
+        function logout() {
+            $.ajax({
+                method: 'post',
+                url: "/logout/",
+                success: function (data) {
+                    window.location = "/login/";
+                }
+            }).fail(function () {
+                window.location = "/login/";
+            }).done(function (msg) {
+            });
+        }
+
+        $('#logout').on('click', function () {
+            logout();
+
+        });
+    })
+    {% block scripts %}{% endblock scripts %}
+
+</script>
+</html>

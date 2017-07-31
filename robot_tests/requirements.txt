@@ -1,0 +1,13 @@
+BeautifulSoup==3.2.1
+decorator==4.1.1
+display==1.0.0
+EasyProcess==0.2.3
+psycopg2==2.7.3
+python-http-client==2.4.0
+PyVirtualDisplay==0.2.1
+robotfixml==1.0.1
+robotframework==3.0.2
+robotframework-databaselibrary==1.0.1
+robotframework-selenium2library==1.8.0
+selenium==3.4.3
+sendgrid==4.2.0

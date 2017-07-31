@@ -9,6 +9,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from rest_framework.views import APIView
+from twilio.rest import Client
 
 from constants import *
 from models import User, UserFriend, Post
@@ -38,6 +39,65 @@ class UserView(APIView):
         return render(request, 'addFriend.html', {'users': users_dictionary})
 
 
+class EditUserView(APIView):
+    def get(self, request):
+        """
+        Render the information page of a specified user.
+        :return: renders editUser.html
+        """
+        user = request.user
+        return render(request, 'editUser.html', {'user': user})
+
+    def post(self, request):
+        """
+        Edit the information of a specified user.
+        :return: renders index.html
+        """
+        first_name = request.POST.get("first_name", None)
+        last_name = request.POST.get("last_name", None)
+        email = request.POST.get("email", None)
+        profile_image = request.POST.get("profile_picture", None)
+
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+
+        try:
+            user.profile_image = request.FILES["profile_picture"]
+        except:
+            user.profile_image = None
+        user.save()
+
+        return render(request, 'index.html', status=200)
+
+class RegistrationView (APIView):
+
+    def get(self, request):
+        """
+        Render the registration page for a specified user.
+        :return: renders Registration.html
+        """
+        return render(request, 'registration.html', status=200)
+
+    def post(self, request):
+        """
+        Creates a new user
+        :return: renders login.html
+        """
+        username = request.POST.get("username", None)
+        password = request.POST.get("password", None)
+        email = request.POST.get("email", None)
+
+        user = User.objects.create(username=username, email=email)
+        user.set_password(password)
+        user.is_staff = True
+        user.is_active = True
+        user.save()
+
+        return render(request, 'login.html', status=200)
+
+
 class UserFriendsView(APIView):
     def get(self, request):
         """
@@ -62,6 +122,9 @@ class UserFriendsView(APIView):
             second_user_pk = request.POST.get("second_user", None)
             second_user = User.objects.get(id=second_user_pk)
             first_user = request.user
+            client = Client(account, token)
+            # message = client.messages.create(to="+59895409490", from_="+1 267-361-0502 ",
+            #                    body="Has agregado un amigo!")
             UserFriend.objects.create(first_user=first_user, second_user=second_user)
         except User.DoesNotExist as e:
             logger.exception(e)
@@ -97,6 +160,12 @@ class IndexView(APIView):
                                                                                    'date_posted', 'author__username'))
 
         return render(request, 'index.html', {'posts': posts_dictionary, 'logged_user': request.user})
+
+    def post (self, request):
+
+        posts_dictionary = list(Post.objects.filter(author__username=request.POST['username']).values('author__username'))
+
+        return JsonResponse({'posts': posts_dictionary}, safe=False)
 
 
 class LoginView(APIView):

@@ -1,0 +1,62 @@
+{
+    "dev": {
+        "aws_region": "ap-northeast-1",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-ap-northeast-1"
+    },
+    "yes_ap_northeast_2": {
+        "aws_region": "ap-northeast-2",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-ap-northeast-2"
+    },
+    "yes_ap_south_1": {
+        "aws_region": "ap-south-1",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-ap-south-1"
+    },
+    "yes_ap_southeast_1": {
+        "aws_region": "ap-southeast-1", 
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-ap-southeast-1"
+    },
+    "yes_ap_southeast_2": {
+        "aws_region": "ap-southeast-2",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-ap-southeast-2"
+    },
+    "yes_eu_central_1": {
+        "aws_region": "eu-central-1",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-eu-central-1"
+    },
+    "yes_eu_west_1": {
+        "aws_region": "eu-west-1",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-eu-west-1"
+    },
+    "yes_eu_west_2": {
+        "aws_region": "eu-west-2",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-eu-west-2"
+    },
+    "yes_us_east_1": {
+        "aws_region": "us-east-1",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-us-east-1"
+    },
+    "yes_us_east_2": {
+        "aws_region": "us-east-2",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-us-east-2"
+    },
+    "yes_us_west_1": {
+        "aws_region": "us-west-1",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-us-west-1"
+    },
+    "yes_us_west_2": {
+        "aws_region": "us-west-2",
+        "django_settings": "socialNetwork.socialNetwork.settings",
+        "s3_bucket": "zappa-mwl6000kh-yes-us-west-2"
+    }
+}

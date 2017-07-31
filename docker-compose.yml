@@ -12,8 +12,9 @@ services:
     volumes:
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     env_file: ./env
-    expose:
-      - "5432"
+    ports:
+      - "5433:5432"
+
 
   # Django web server
   web:
