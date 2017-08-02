@@ -80,7 +80,6 @@ WSGI_APPLICATION = 'socialNetwork.wsgi.application'
 AUTH_USER_MODEL = 'socialNetworkApp.User'
 
 # Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databasesMySQL - socialNetwork@127.0.0.1
 
 DATABASES = {
     'default': {
@@ -125,7 +124,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_L10N = True
-# MySQL - socialnetwork@localhost
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)

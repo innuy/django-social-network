@@ -19,8 +19,6 @@ services:
   # Django web server
   web:
     build: ./web
-    ports:
-      - "3000:8008"
     env_file: ./env
     links:
       - postgres
@@ -34,7 +32,9 @@ services:
 
   nginx:
     restart: always
-    build: ./nginx/
+    build: 
+      context: ./nginx/
+      dockerfile: DockerFile
     ports:
     - "8001:8001"
     volumes_from:
